@@ -6,9 +6,9 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.neosoft.myapplication.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        android:name="com.neosoft.myapplication.navigation.HomeFragment"
+        android:label="Home "
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_viewTransactionFragment"
             app:destination="@id/viewTransactionFragment" />
@@ -21,22 +21,23 @@
     </fragment>
     <fragment
         android:id="@+id/viewTransactionFragment"
-        android:name="com.neosoft.myapplication.ViewTransactionFragment"
-        android:label="fragment_view_transaction"
+        android:name="com.neosoft.myapplication.navigation.ViewTransactionFragment"
+        android:label="Transaction"
         tools:layout="@layout/fragment_view_transaction" >
         <action
             android:id="@+id/action_viewTransactionFragment_to_sendCashFragment"
-            app:destination="@id/sendCashFragment" >
-        <argument
-            android:name="amt"
-            app:argType="string"
-            android:defaultValue="10"/>
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false">
+            <argument
+                android:name="amt"
+                android:defaultValue="10"
+                app:argType="string" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/chooseReceiverFragment"
-        android:name="com.neosoft.myapplication.ChooseReceiverFragment"
-        android:label="fragment_choose_receiver"
+        android:name="com.neosoft.myapplication.navigation.ChooseReceiverFragment"
+        android:label="Receiver"
         tools:layout="@layout/fragment_choose_receiver" >
         <action
             android:id="@+id/action_chooseReceiverFragment_to_sendCashFragment"
@@ -45,8 +46,8 @@
     </fragment>
     <fragment
         android:id="@+id/sendCashFragment"
-        android:name="com.neosoft.myapplication.SendCashFragment"
-        android:label="fragment_send_cash"
+        android:name="com.neosoft.myapplication.navigation.SendCashFragment"
+        android:label="Send Cash -{receiverName}"
         tools:layout="@layout/fragment_send_cash">
 
         <argument
@@ -60,15 +61,20 @@
         <action
             android:id="@+id/action_sendCashFragment_to_confirmDialogFragment"
             app:destination="@id/confirmDialogFragment" />
+        <action
+            android:id="@+id/action_sendCashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/viewBalenceFragment"
-        android:name="com.neosoft.myapplication.ViewBalenceFragment"
-        android:label="fragment_view_balence"
+        android:name="com.neosoft.myapplication.navigation.ViewBalenceFragment"
+        android:label="View Balence"
         tools:layout="@layout/fragment_view_balence" />
     <dialog
         android:id="@+id/confirmDialogFragment"
-        android:name="com.neosoft.myapplication.ConfirmDialogFragment"
+        android:name="com.neosoft.myapplication.navigation.ConfirmDialogFragment"
         android:label="ConfirmDialogFragment"
         tools:layout="@layout/fragment_confirm_dialog">
         <argument
@@ -76,4 +82,12 @@
             app:argType="string" />
         <argument android:name="amount" />
     </dialog>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.neosoft.myapplication.navigation.SettingsFragment"
+        android:label="Setting" />
+    <fragment
+        android:id="@+id/aboutAppFragment"
+        android:name="com.neosoft.myapplication.navigation.AboutAppFragment"
+        android:label="AboutApp" /><action android:id="@+id/action_global_aboutAppFragment" app:destination="@id/aboutAppFragment"/>
 </navigation>

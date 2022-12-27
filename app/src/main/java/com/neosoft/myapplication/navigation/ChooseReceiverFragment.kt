@@ -1,12 +1,12 @@
-package com.neosoft.myapplication
+package com.neosoft.myapplication.navigation
 
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.neosoft.myapplication.R
 import kotlinx.android.synthetic.main.fragment_choose_receiver.*
 
 
@@ -28,6 +28,9 @@ class ChooseReceiverFragment : Fragment(R.layout.fragment_choose_receiver) {
             Log.d("GET", "onViewCreated: $data")
         }
 
+        btn_cancel.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     fun <T : Any> Fragment.getBackStackData(key: String, result: (T) -> (Unit)) {
