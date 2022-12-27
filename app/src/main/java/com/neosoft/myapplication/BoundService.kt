@@ -8,15 +8,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
 import java.util.*
 
-class BoundService : Service() {
+class BoundService() : Service() {
     private val mBinder: IBinder = MyBinder()
+    private var timer: Timer? = null
+    private var timerTask: TimerTask? = null
+    var oldTime: Long = 0
+    var counter = 0
 
     // Random number generator
     private val mGenerator: Random = Random()
@@ -26,20 +29,66 @@ class BoundService : Service() {
 
     // Channel ID for notification
     val CHANNEL_ID = "Random number notification"
+    var num = 0
 
-    override fun onCreate() {
-        super.onCreate()
-        Log.d("MyBoundService", "onCreate called")
+//    override fun onCreate() {
+//        super.onCreate()
+//        Log.d("MyBoundService", "onCreate called")
+//        startNotification()
+//
+//
+//        GlobalScope.launch {
+//
+//            }
+//
+//
+//
+////            val randomNumber = mGenerator.nextInt(num)
+//
+//        }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+
         startNotification()
+        return START_STICKY
+    }
 
-        Handler().postDelayed({
-            val randomNumber = mGenerator.nextInt(100)
-            randomNumberLiveData.postValue(randomNumber)
-        }, 1000)
+    fun startTimer() {
+        //set a new Timer
+        timer = Timer()
+
+        //initialize the TimerTask's job
+        initializeTimerTask()
+
+        //schedule the timer, to wake up every 1 second
+        timer!!.schedule(timerTask, 1000, 1000) //
+    }
+
+    fun initializeTimerTask() {
+        timerTask = object : TimerTask() {
+            override fun run() {
+                Log.i("in timer", "in timer ++++  " + counter++)
+            }
+        }
+    }
+
+    fun stoptimertask() {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+            timer!!.cancel()
+            timer = null
+        }
+    }
+
+    override fun stopService(name: Intent?): Boolean {
+        return super.stopService(name)
+        stoptimertask()
+        onDestroy()
     }
 
     override fun onBind(p0: Intent?): IBinder? {
-        return mBinder
+        return null
     }
 
 
@@ -72,5 +121,17 @@ class BoundService : Service() {
             .setContentTitle("A service is running in the background")
             .setContentText("Generating random number").build()
         startForeground(1, notification)
+        startTimer()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("EXIT", "ondestroy!")
+        val broadcastIntent = Intent(this, SensorRestarterBroadcastReceiver::class.java)
+        sendBroadcast(broadcastIntent)
+         stoptimertask()
+       // startTimer()
+
     }
 }

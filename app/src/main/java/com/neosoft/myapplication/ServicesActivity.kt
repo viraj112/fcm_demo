@@ -1,43 +1,69 @@
 package com.neosoft.myapplication
 
+import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_services.*
+
 
 class ServicesActivity : AppCompatActivity() {
 
     var mService: BoundService? = null
-
+    var mServiceIntent: Intent? = null
+    private var mSensorService: BoundService? = null
     // Boolean to check if our activity is bound to service or not
     var mIsBound: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_services)
-
+        mSensorService = BoundService()
+        mServiceIntent = Intent(this, mSensorService!!.javaClass)
+        if (!isMyServiceRunning(mSensorService!!.javaClass)) {
+            startService(mServiceIntent)
+        }
         btn_start.setOnClickListener {
             // startService(Intent(this,StarServices::class.java))
 
-            bindService()
+
+            //bindService()
         }
 
         btn_stop.setOnClickListener {
             //stopService(Intent(this,StarServices::class.java))
-            if (mIsBound == true) {
-                unbindService()
-                mIsBound = false
+//            if (mIsBound == true) {
+//                unbindService()
+//                mIsBound = false
+//            }
+            mSensorService = BoundService()
+            mServiceIntent = Intent(this, mSensorService!!.javaClass)
+            if (isMyServiceRunning(mSensorService!!.javaClass)) {
+                //stopService(mServiceIntent)
+                mSensorService?.stopService(mServiceIntent)
+
             }
 
         }
     }
 
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                Log.i("isMyServiceRunning?", true.toString() + "")
+                return true
+            }
+        }
+        Log.i("isMyServiceRunning?", false.toString() + "")
+        return false
+    }
     private fun getRandomNumberFromService() {
         mService?.randomNumberLiveData?.observe(this, Observer {
             resulttext?.text = "Random number from service: $it"
@@ -81,4 +107,13 @@ class ServicesActivity : AppCompatActivity() {
 
 
     }
+
+    override fun onDestroy() {
+        stopService(mServiceIntent);
+        Log.i("MAINACT", "onDestroy!");
+        super.onDestroy()
+
+    }
+
+
 }
