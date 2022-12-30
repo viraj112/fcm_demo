@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.neosoft.myapplication.navigation.HomeFragment"
+        tools:layout="@layout/fragment_home"
+        android:label="Home ">
+        <action
+            android:id="@+id/action_homeFragment_to_viewTransactionFragment"
+            app:destination="@id/viewTransactionFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_chooseReceiverFragment"
+            app:destination="@id/chooseReceiverFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_viewBalenceFragment"
+            app:destination="@id/viewBalenceFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_homeFragment_to_chooseReceiverFragment"
+        app:destination="@id/chooseReceiverFragment" />
+    <fragment
+        android:id="@+id/viewTransactionFragment"
+        android:name="com.neosoft.myapplication.navigation.ViewTransactionFragment"
+        tools:layout="@layout/fragment_view_transaction"
+        android:label="Transaction">
+        <action
+            android:id="@+id/action_viewTransactionFragment_to_sendCashFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false">
+            <argument
+                android:name="amt"
+                android:defaultValue="10"
+                app:argType="string" />
+        </action>
+    </fragment>
+    <action
+        android:id="@+id/action_sendCashFragment_to_homeFragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/chooseReceiverFragment"
+        android:name="com.neosoft.myapplication.navigation.ChooseReceiverFragment"
+        tools:layout="@layout/fragment_choose_receiver"
+        android:label="Receiver">
+        <action
+            android:id="@+id/action_chooseReceiverFragment_to_sendCashFragment"
+            app:destination="@id/sendCashFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/viewBalenceFragment"
+        android:name="com.neosoft.myapplication.navigation.ViewBalenceFragment"
+        tools:layout="@layout/fragment_view_balence"
+        android:label="View Balence" />
+    <fragment
+        android:id="@+id/sendCashFragment"
+        android:name="com.neosoft.myapplication.navigation.SendCashFragment"
+        tools:layout="@layout/fragment_send_cash"
+        android:label="Send Cash -{receiverName}">
+
+        <argument
+            android:name="receiverName"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="amt"
+            android:defaultValue="10L"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_sendCashFragment_to_confirmDialogFragment"
+            app:destination="@id/confirmDialogFragment" />
+        <action
+            android:id="@+id/action_sendCashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="www.navcomponant.com/{receiverName}" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.neosoft.myapplication.navigation.NotificationsFragment"
+        android:label="NotificationsFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.neosoft.myapplication.navigation.SettingsFragment"
+        android:label="Setting" />
+    <fragment
+        android:id="@+id/aboutAppFragment"
+        android:name="com.neosoft.myapplication.navigation.AboutAppFragment"
+        android:label="AboutApp" />
+    <dialog
+        android:id="@+id/confirmDialogFragment"
+        android:name="com.neosoft.myapplication.navigation.ConfirmDialogFragment"
+        tools:layout="@layout/fragment_confirm_dialog"
+        android:label="ConfirmDialogFragment">
+        <argument
+            android:name="receiverName"
+            app:argType="string" />
+        <argument android:name="amount" />
+    </dialog>
+</navigation>
